@@ -30,6 +30,7 @@ public final class JsonUtilities {
             for(int i = 0; i < results.length(); i++) {
                 Movie movie = new Movie();
                 JSONObject movieItem =  results.getJSONObject(i);
+
                 movie.setPopularity(movieItem.getDouble(POPULARITY));
                 movie.setVoteCount(movieItem.getInt(VOTE_COUNT));
                 movie.setVideo(movieItem.getBoolean(VIDEO));
