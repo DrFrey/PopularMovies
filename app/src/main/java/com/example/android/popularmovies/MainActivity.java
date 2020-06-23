@@ -3,6 +3,7 @@ package com.example.android.popularmovies;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -33,13 +35,12 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.rv_movie_list);
         mErrorMessage = findViewById(R.id.tv_error_message);
         mProgressBar = findViewById(R.id.pb_loading);
-        int noOfColumns = calculateNoOfColumns(this);
 
-        GridLayoutManager gridLayoutManager =
-                new GridLayoutManager(this, noOfColumns);
+        LinearLayoutManager layoutManager =
+                new LinearLayoutManager(this);
 
 
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
         mMovieAdapter = new MovieAdapter();
@@ -80,14 +81,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("___MOV", "error");
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessage.setVisibility(View.VISIBLE);
-    }
-
-    private int calculateNoOfColumns(Context context) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        Log.d("___MOV", "width = " + displayMetrics.widthPixels);
-        Log.d("___MOV", "dimen = " + getResources().getDimension(R.dimen.poster_width));
-
-        return displayMetrics.widthPixels / 342;
     }
 
 
