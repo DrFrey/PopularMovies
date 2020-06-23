@@ -36,8 +36,9 @@ public class MainActivity extends AppCompatActivity {
         mErrorMessage = findViewById(R.id.tv_error_message);
         mProgressBar = findViewById(R.id.pb_loading);
 
-        LinearLayoutManager layoutManager =
-                new LinearLayoutManager(this);
+        GridLayoutManager layoutManager =
+                new GridLayoutManager(this, calculateNoOfColumns(this));
+
 
 
         mRecyclerView.setLayoutManager(layoutManager);
@@ -82,7 +83,10 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessage.setVisibility(View.VISIBLE);
     }
-
+    private int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return displayMetrics.widthPixels / 342;
+    }
 
     public class FetchMoviesData extends AsyncTask<Integer, Void, String> {
 
