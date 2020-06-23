@@ -1,5 +1,7 @@
 package com.example.android.popularmovies;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +25,10 @@ public final class JsonUtilities {
 
 
     public static void jsonExtract(String jsonString){
+
+        MovieList.getInstance().getMovieList().clear();
+        Log.d("___MOV", jsonString);
+
 
         try {
             JSONObject jsonObject = new JSONObject(jsonString);

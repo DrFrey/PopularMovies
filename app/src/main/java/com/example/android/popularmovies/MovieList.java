@@ -26,4 +26,6 @@ public class MovieList {
     public void addItem(Movie movie){
         mMovieList.add(movie);
     }
+
+
 }
