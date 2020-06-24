@@ -17,8 +17,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
     private final String IMAGE_SIZE = "w342";
 
-    public MovieAdapter() {}
+    private final MovieAdapterOnClickHandler mClickHandler;
 
+    public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
+        mClickHandler = clickHandler;
+    }
+
+    public interface MovieAdapterOnClickHandler {
+        void onClick(Movie movie);
+    }
 
     @NonNull
     @Override
@@ -49,13 +56,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         }
     }
 
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
+
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView mImageView;
 
         public MovieAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.iv_movie_cover);
+            mImageView.setOnClickListener(this);
+        }
 
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAbsoluteAdapterPosition();
+            Movie movie = MovieList.getInstance().getMovieList().get(adapterPosition);
+            mClickHandler.onClick(movie);
         }
     }
 }

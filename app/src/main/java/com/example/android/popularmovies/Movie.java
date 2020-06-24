@@ -1,6 +1,9 @@
 package com.example.android.popularmovies;
 
-public class Movie {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Movie implements Parcelable {
     Double popularity;
     int voteCount;
     Boolean video;
@@ -127,4 +130,59 @@ public class Movie {
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.popularity);
+        dest.writeInt(this.voteCount);
+        dest.writeValue(this.video);
+        dest.writeString(this.posterPath);
+        dest.writeInt(this.id);
+        dest.writeValue(this.adult);
+        dest.writeString(this.backdropPath);
+        dest.writeString(this.originalLanguage);
+        dest.writeString(this.originalTitle);
+        dest.writeIntArray(this.genreIds);
+        dest.writeString(this.title);
+        dest.writeValue(this.voteAverage);
+        dest.writeString(this.overview);
+        dest.writeString(this.releaseDate);
+    }
+
+    public Movie() {
+    }
+
+    protected Movie(Parcel in) {
+        this.popularity = (Double) in.readValue(Double.class.getClassLoader());
+        this.voteCount = in.readInt();
+        this.video = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.posterPath = in.readString();
+        this.id = in.readInt();
+        this.adult = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.backdropPath = in.readString();
+        this.originalLanguage = in.readString();
+        this.originalTitle = in.readString();
+        this.genreIds = in.createIntArray();
+        this.title = in.readString();
+        this.voteAverage = (Double) in.readValue(Double.class.getClassLoader());
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

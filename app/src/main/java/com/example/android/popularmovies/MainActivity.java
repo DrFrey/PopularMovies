@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -20,7 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private RecyclerView mRecyclerView;
     private TextView mErrorMessage;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mMovieAdapter = new MovieAdapter();
+        mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
         showMovies();
@@ -86,6 +87,14 @@ public class MainActivity extends AppCompatActivity {
     private int calculateNoOfColumns(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return displayMetrics.widthPixels / 342;
+    }
+
+    @Override
+    public void onClick(Movie movie) {
+        Log.d("___MOV", "clicked");
+        Intent intent = new Intent(MainActivity.this, MovieDetails.class);
+        intent.putExtra("MovieDetails", movie);
+        startActivity(intent);
     }
 
     public class FetchMoviesData extends AsyncTask<Integer, Void, String> {
