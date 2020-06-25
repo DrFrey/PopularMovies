@@ -16,7 +16,7 @@ public final class NetworkUtilities {
     private final static String TOP_URL = "https://api.themoviedb.org/3/movie/top_rated?api_key=";
 
     //get this key from themoviedb.org
-    private final static String API_KEY = "57f20ade69dd940169f363aa0f60d9be";
+    private final static String API_KEY = "";
 
     public static String getPopularMovies(){
         URL url = popularMoviesUrl();
