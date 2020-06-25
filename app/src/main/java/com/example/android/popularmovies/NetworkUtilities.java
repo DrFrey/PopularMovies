@@ -1,11 +1,13 @@
 package com.example.android.popularmovies;
 
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -42,8 +44,6 @@ public final class NetworkUtilities {
         String address = POPULAR_URL+API_KEY;
         URL url = null;
         try {
-            Log.d("___MOV", address);
-
             url = new URL(address);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -64,8 +64,6 @@ public final class NetworkUtilities {
     private static String getResponseFromUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
-            Log.d("___MOV", "opening connection");
-
             InputStream stream = urlConnection.getInputStream();
             Scanner scanner = new Scanner(stream);
             scanner.useDelimiter("\\A");
@@ -79,4 +77,17 @@ public final class NetworkUtilities {
             urlConnection.disconnect();
         }
     }
+    public static boolean isOnline() {
+        try {
+            int timeoutMs = 1500;
+            Socket sock = new Socket();
+            SocketAddress sockaddr = new InetSocketAddress("8.8.8.8", 53);
+
+            sock.connect(sockaddr, timeoutMs);
+            sock.close();
+
+            return true;
+        } catch (IOException e) { return false; }
+    }
+
 }

@@ -1,7 +1,6 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +17,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private final String IMAGE_SIZE = "w342";
 
     private final MovieAdapterOnClickHandler mClickHandler;
+    private int mImageWidth;
 
-    public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
+    public MovieAdapter(MovieAdapterOnClickHandler clickHandler, int imageWidth) {
         mClickHandler = clickHandler;
+        mImageWidth = imageWidth;
     }
 
     public interface MovieAdapterOnClickHandler {
@@ -42,7 +43,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         Movie movie = MovieList.getInstance().getMovieList().get(position);
         String coverImageAddress = BASE_IMAGE_URL + IMAGE_SIZE + movie.getPosterPath();
-
         Picasso.get().load(coverImageAddress).into(holder.mImageView);
 
     }
@@ -63,6 +63,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public MovieAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.iv_movie_cover);
+            mImageView.getLayoutParams().width = mImageWidth;
             mImageView.setOnClickListener(this);
         }
 

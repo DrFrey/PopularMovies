@@ -3,9 +3,7 @@ package com.example.android.popularmovies;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -27,6 +24,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private TextView mErrorMessage;
     private ProgressBar mProgressBar;
     private MovieAdapter mMovieAdapter;
+    private int noOfColumns;
+    private int resizedImageWidth;
+    private final int IMAGE_WIDTH = 342;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,20 +37,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mErrorMessage = findViewById(R.id.tv_error_message);
         mProgressBar = findViewById(R.id.pb_loading);
 
+        calculateDimensions(this);
+
         GridLayoutManager layoutManager =
-                new GridLayoutManager(this, calculateNoOfColumns(this));
-
-
+                new GridLayoutManager(this, noOfColumns);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mMovieAdapter = new MovieAdapter(this);
+        mMovieAdapter = new MovieAdapter(this, resizedImageWidth);
         mRecyclerView.setAdapter(mMovieAdapter);
 
         showMovies();
+
         new FetchMoviesData().execute(1);
-        Log.d("___MOV", "initial create");
 
     }
 
@@ -79,19 +79,22 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void showErrorMessage() {
-        Log.d("___MOV", "error");
+    private void showErrorMessage(String error) {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessage.setVisibility(View.VISIBLE);
+        mErrorMessage.setText(error);
     }
-    private int calculateNoOfColumns(Context context) {
+    private void calculateDimensions(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return displayMetrics.widthPixels / 342;
+        int screenWidth = displayMetrics.widthPixels;
+        noOfColumns = screenWidth / IMAGE_WIDTH;
+
+        int margin = screenWidth - IMAGE_WIDTH * noOfColumns;
+        resizedImageWidth = IMAGE_WIDTH + margin / noOfColumns;
     }
 
     @Override
     public void onClick(Movie movie) {
-        Log.d("___MOV", "clicked");
         Intent intent = new Intent(MainActivity.this, MovieDetails.class);
         intent.putExtra("MovieDetails", movie);
         startActivity(intent);
@@ -107,33 +110,32 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         @Override
         protected String doInBackground(Integer... params) {
-            if (params[0] == 1) {
-                Log.d("___MOV", "pop selected");
-                return NetworkUtilities.getPopularMovies();
-            } else if(params[0] == 2) {
-                Log.d("___MOV", "top selected");
-                return NetworkUtilities.getTopRatedMovies();
+            if(NetworkUtilities.isOnline()) {
+                if (params[0] == 1) {
+                    return NetworkUtilities.getPopularMovies();
+                } else if (params[0] == 2) {
+                    return NetworkUtilities.getTopRatedMovies();
+                } else {
+                    return "Oops... Something is wrong...";
+                }
             } else {
-                return "";
+                return "No internet :(((";
             }
         }
 
         @Override
         protected void onPostExecute(String s) {
             mProgressBar.setVisibility(View.INVISIBLE);
-            if(s != null) {
+            if(s != null && s.startsWith("{")) {
                 JsonUtilities.jsonExtract(s);
                 if(MovieList.getInstance().getMovieList() != null) {
-                    Log.d("___MOV", "retrieved" + MovieList.getInstance().getMovieList().size());
-
                     mMovieAdapter.notifyDataSetChanged();
                 } else {
-                    showErrorMessage();
+                    showErrorMessage("Movie list is null :(");
                 }
             } else {
-                showErrorMessage();
+                showErrorMessage(s);
             }
-
         }
     }
 }

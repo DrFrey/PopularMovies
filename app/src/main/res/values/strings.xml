@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Popular Movies</string>
-    <string name="error_message">Oops… something went wrong!</string>
     <string name="content_description">Movie cover</string>
     <string name="menu_item_popular">Popular movies</string>
     <string name="menu_item_top">Top-rated movies</string>
